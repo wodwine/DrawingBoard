@@ -2,6 +2,7 @@ package objects;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CompositeGObject extends GObject {
@@ -14,30 +15,56 @@ public class CompositeGObject extends GObject {
     }
 
     public void add(GObject gObject) {
-        // TODO: Implement this method.
+        this.gObjects.add(gObject);
     }
 
     public void remove(GObject gObject) {
-        // TODO: Implement this method.
+        this.gObjects.remove(gObject);
     }
 
     @Override
     public void move(int dX, int dY) {
-        // TODO: Implement this method.
+        this.x += dX;
+        this.y += dY;
+        for (GObject g : this.gObjects) {
+            g.move(dX, dY);
+        }
     }
 
     public void recalculateRegion() {
-        // TODO: Implement this method.
+        List<Integer> xList = new ArrayList<Integer>();
+        List<Integer> yList = new ArrayList<Integer>();
+        for (GObject g : this.gObjects) {
+            xList.add(g.x);
+            yList.add(g.y);
+        }
+        int xMin = Collections.min(xList);
+        int xMax = Collections.max(xList);
+        int yMin = Collections.min(yList);
+        int yMax = Collections.max(yList);
+        this.x = xMin;
+        this.y = yMin;
+        for (GObject g : this.gObjects) {
+            if(xMax==g.x){
+                this.width=g.width+xMax-xMin;
+            }
+            if(yMax==g.y){
+                this.height=g.height+yMax-yMin;
+            }
+        }
+
     }
 
     @Override
     public void paintObject(Graphics g) {
-        // TODO: Implement this method.
+        for (GObject gO : this.gObjects) {
+            gO.paintObject(g);
+        }
     }
 
     @Override
     public void paintLabel(Graphics g) {
-        // TODO: Implement this method.
+        g.drawString("Group", x, y+this.height+10);
     }
 
 }

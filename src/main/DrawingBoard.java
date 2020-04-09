@@ -1,5 +1,6 @@
 package main;
 
+import objects.CompositeGObject;
 import objects.GObject;
 
 import javax.swing.*;
@@ -31,11 +32,20 @@ public class DrawingBoard extends JPanel {
     }
 
     public void groupAll() {
-        // TODO: Implement this method.
+        CompositeGObject compositeGObject = new CompositeGObject();
+        for (GObject g : this.gObjects) {
+            compositeGObject.add(g);
+        }
+        deleteSelected();
+        clear();
+        compositeGObject.recalculateRegion();
+        addGObject(compositeGObject);
+
     }
 
     public void deleteSelected() {
         this.gObjects.remove(target);
+        target = null;
         repaint();
     }
 
@@ -80,6 +90,7 @@ public class DrawingBoard extends JPanel {
         int curY;
 
         private void deselectAll() {
+            target = null;
             for (GObject g : gObjects) {
                 g.deselected();
                 repaint();
